@@ -1,0 +1,62 @@
+<div class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column">
+        <div class="box">
+          <p class="title is-4 has-text-centered"><%= @event.title %></p>
+
+          <% if @event.creator==current_user %>
+            <div class="creator-content">
+              <p> You are hosting this event! </p>
+              <p><%= link_to "Cancel Event", "/events/#{@event.id}", method: :delete %></p>
+            </div>
+          <% else %>
+            <p> Event Details: <%=@event.description%></p>
+            <p> Date/Time: <%=@event.date%></p>
+            <p> Location: <%=@event.location%></p>
+            <p> Hosted by: <%= @event.creator.name %></p>
+              <% if !user_signed_in? %>
+                <p><u><%=link_to 'Sign up', new_user_registration_path%></u> / <u><%=link_to 'Sign in', new_user_session_path %></u>
+                to sign up for this event...
+                </p>
+              <% elsif current_user.attended_events.include?(@event)%>
+                <% signup=  SignUp.where(attendee_id: current_user, attended_event_id: @event)%>
+                <p><%= link_to signup.first, method: :delete do%>
+                  <span>Cancel Reservation</span>
+                 <%end%>
+                </p>
+              <%else%>
+                <%= simple_form_for(@sign_up) do |f| %>
+                <%= f.hidden_field :attendee_id, :value => current_user.id %>
+                <%= f.hidden_field :attended_event_id, :value => @event.id %>
+                <%= button_tag(type: 'submit', class: "button is-primary") do %>
+                  <span> Sign Up </span>
+                  <%end%>
+                <%end%>
+              <%end%>
+           <%end%>
+          </div>
+          <%=link_to "Back to Events", root_path%>
+        </div>
+
+
+
+        <div class="column">
+          <div class="box">
+            <p class="title is-4 has-text-centered">RSVPs: </p>
+             <div class="content">
+               <%if @event.attendees.any?%>
+               <ul>
+               <% @event.attendees.each do |attendee| %>
+                 <li><p><%= attendee.name %></p></li>
+                <%end%>
+               </ul>
+               <%else%>
+                 <p>No one has signed up for this event yet...</p>
+               <%end%>
+             </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>

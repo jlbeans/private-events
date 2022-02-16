@@ -1,0 +1,76 @@
+<section class="section">
+<div class="container">
+  <h1 class="title is-4 has-text-centered">My Upcoming Events</h1>
+    <div class="columns is-centered">
+      <div class="column">
+        <div class="box">
+          <div class="subtitle">Hosting: </div>
+            <% if @user.created_events.where('date >= ?', Date.today).count.zero?%>
+              <p>You are not scheduled to host any events...</p>
+            <%else%>
+              <% @user.created_events.where('date >= ?', Date.today).each do |event| %>
+               <div class="content">
+               <p><strong> Event: <%=event.title%></strong></p>
+               <p> About: <%=event.description%></p>
+               <p> Date/Time: <%=event.date%></p>
+               <p> Location: <%=event.location%></p>
+            </div>
+             <%end%>
+            <%end%>
+          </div>
+         </div>
+       <div class="column">
+         <div class="box">
+           <div class="subtitle">Attending: </div>
+             <% if @user.attended_events.where('date >= ?', Date.today).count.zero?%>
+               <p>You are not signed up for any upcoming events...</p>
+             <%else%>
+               <% @user.attended_events.where('date >= ?', Date.today).each do |event| %>
+                 <div class="content">
+                 <p><strong> Event: <%=event.title%></strong></p>
+                 <p> About: <%=event.description%></p>
+                 <p> Date/Time: <%=event.date%></p>
+                 <p> Location: <%=event.location%></p>
+                </div>
+               <%end%>
+             <%end%>
+          </div>
+         </div>
+      </div>
+
+      <br>
+
+
+    <h2 class="title is-4">My Past Events</h2>
+      <div class="columns is-centered">
+        <div class="column">
+          <div class="box">
+            <div class="subtitle">Hosted: </div>
+              <% if @user.created_events.where('date < ?', Date.today).count.zero?%>
+                <p>You have not hosted any events...</p>
+              <%else%>
+                <% @user.created_events.where('date < ?', Date.today).each do |event| %>
+                 <div class="content">
+                 <p> Event: <%= link_to event.title, event_path(event)%></p>
+                </div>
+               <%end%>
+             <%end%>
+           </div>
+          </div>
+        <div class="column">
+          <div class="box">
+            <div class="subtitle">Attended: </div>
+              <% if @user.attended_events.where('date < ?', Date.today).count.zero?%>
+                <p>You have not attended any events...</p>
+              <%else%>
+                <% @user.attended_events.where('date < ?', Date.today).each do |event| %>
+                  <div class="content">
+                  <p> Event: <%= link_to event.title, event_path(event)%></p>
+                  </div>
+               <%end%>
+             <%end%>
+           </div>
+         </div>
+       </div>
+    </div>
+  </section>
